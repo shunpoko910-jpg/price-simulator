@@ -152,6 +152,7 @@ export default function Home() {
   const [toast, setToast] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [appId, setAppId] = useState("");
+  const [accessKey, setAccessKey] = useState("");
   const [fetchErr, setFetchErr] = useState("");
   const saveRef = useRef(null);
 
@@ -164,6 +165,7 @@ export default function Home() {
       if (d.d50 !== undefined) setD50(d.d50);
       if (d.sale !== undefined) setSale(d.sale);
       if (d.appId) setAppId(d.appId);
+      if (d.accessKey) setAccessKey(d.accessKey);
     }
     setLoaded(true);
   }, []);
@@ -172,18 +174,18 @@ export default function Home() {
     if (!loaded) return;
     if (saveRef.current) clearTimeout(saveRef.current);
     saveRef.current = setTimeout(() => {
-      saveSettings({ spu, amz, shops, d50, sale, appId });
+      saveSettings({ spu, amz, shops, d50, sale, appId, accessKey });
       setToast("✓ 設定を保存しました");
       setTimeout(() => setToast(""), 1800);
     }, 600);
     return () => { if (saveRef.current) clearTimeout(saveRef.current); };
-  }, [spu, amz, shops, d50, sale, appId, loaded]);
+  }, [spu, amz, shops, d50, sale, appId, accessKey, loaded]);
 
   const toggleSpu = useCallback((id) => setSpu((p) => ({ ...p, [id]: !p[id] })), []);
   const toggleAmz = useCallback((id) => setAmz((p) => ({ ...p, [id]: !p[id] })), []);
 
   const handleReset = useCallback(() => {
-    setSpu({}); setAmz({}); setShops("1"); setD50(false); setSale(false); setAppId("");
+    setSpu({}); setAmz({}); setShops("1"); setD50(false); setSale(false); setAppId(""); setAccessKey("");
     try { localStorage.removeItem(LS_KEY); } catch {}
   }, []);
 
@@ -197,6 +199,7 @@ export default function Home() {
 
     try {
       const params = new URLSearchParams({ appId, itemCode: parsed.itemCode });
+      if (accessKey) params.set("accessKey", accessKey);
       const res = await fetch(`/api/rakuten?${params}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
@@ -217,7 +220,7 @@ export default function Home() {
     } catch (err) {
       setFetchErr(err.message || "取得に失敗しました"); setRFetch("error");
     }
-  }, [rUrl, appId]);
+  }, [rUrl, appId, accessKey]);
 
   const result = useMemo(() => {
     const rp = parseFloat(rPrice) || 0, rs = parseFloat(rShip) || 0;
@@ -404,7 +407,7 @@ export default function Home() {
                 <Pill text="自動保存" color={gRaw} />
               </div>
               <input type="text" value={appId} onChange={(e) => setAppId(e.target.value)}
-                placeholder="楽天Developersで取得したアプリID"
+                placeholder="Application ID"
                 style={{
                   width: "100%", padding: "10px 12px", background: "var(--bg)", border: "1px solid var(--border2)",
                   borderRadius: 8, color: "var(--text)", fontSize: 12, fontFamily: "'DM Mono', monospace", outline: "none", boxSizing: "border-box",
@@ -412,8 +415,20 @@ export default function Home() {
                 onFocus={(e) => (e.target.style.borderColor = gRaw)}
                 onBlur={(e) => (e.target.style.borderColor = "var(--border2)")}
               />
+              <div style={{ marginTop: 8 }}>
+                <div style={{ fontSize: 10, color: "var(--text-muted)", marginBottom: 4, fontWeight: 600 }}>Access Key</div>
+                <input type="text" value={accessKey} onChange={(e) => setAccessKey(e.target.value)}
+                  placeholder="Access Key（アプリ詳細画面で確認）"
+                  style={{
+                    width: "100%", padding: "10px 12px", background: "var(--bg)", border: "1px solid var(--border2)",
+                    borderRadius: 8, color: "var(--text)", fontSize: 12, fontFamily: "'DM Mono', monospace", outline: "none", boxSizing: "border-box",
+                  }}
+                  onFocus={(e) => (e.target.style.borderColor = gRaw)}
+                  onBlur={(e) => (e.target.style.borderColor = "var(--border2)")}
+                />
+              </div>
               <div style={{ marginTop: 6, fontSize: 10, color: "var(--text-faint)", lineHeight: 1.6 }}>
-                <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" style={{ color: gRaw, textDecoration: "none" }}>楽天Developers</a> で無料発行 → 商品URLから価格を自動取得
+                <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" style={{ color: gRaw, textDecoration: "none" }}>楽天Developers</a> → Your Apps → Application ID と Access Key の2つが必要です
               </div>
             </div>
 
