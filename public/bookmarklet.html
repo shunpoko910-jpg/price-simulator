@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Amazon価格取得ブックマークレット｜楽天 vs Amazon シミュレーター</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700;900&family=DM+Sans:wght@400;600;700&family=DM+Mono:wght@400;500&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #141210; color: #e8e6e1; font-family: 'Noto Sans JP','DM Sans',sans-serif; padding: 24px 16px 80px; }
+  .container { max-width: 600px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 900; text-align: center; margin-bottom: 8px; }
+  h1 span.r { color: #BF0000; } h1 span.a { color: #FF9900; }
+  .sub { text-align: center; font-size: 12px; color: #8a8680; margin-bottom: 32px; }
+  h2 { font-size: 16px; font-weight: 700; color: #d4a853; margin: 28px 0 12px; }
+  p, li { font-size: 14px; line-height: 1.8; color: #ccc; }
+  ol { padding-left: 20px; margin-bottom: 16px; }
+  li { margin-bottom: 8px; }
+  .bookmarklet-btn {
+    display: inline-block; padding: 14px 28px; background: #FF9900;
+    color: #141210; font-size: 15px; font-weight: 800; border-radius: 12px;
+    text-decoration: none; cursor: grab; margin: 16px 0;
+    box-shadow: 0 4px 20px rgba(255,153,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .bookmarklet-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(255,153,0,0.4); }
+  .drag-hint { text-align: center; margin-bottom: 24px; }
+  .card { background: #1e1c19; border: 1px solid #2a2825; border-radius: 14px; padding: 20px; margin: 16px 0; }
+  code { background: #252320; padding: 2px 8px; border-radius: 4px; font-family: 'DM Mono', monospace; font-size: 13px; color: #d4a853; }
+  .warn { background: #FF990015; border: 1px solid #FF990033; border-radius: 10px; padding: 14px 18px; margin: 16px 0; }
+  .warn strong { color: #FF9900; }
+  .steps-img { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
+  .step-box { flex: 1; min-width: 150px; background: #252320; border-radius: 10px; padding: 16px; text-align: center; }
+  .step-num { font-size: 28px; font-weight: 900; color: #d4a853; }
+  .step-label { font-size: 12px; color: #8a8680; margin-top: 4px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div style="text-align:center;margin-bottom:4px;">
+    <span style="font-size:11px;letter-spacing:0.2em;color:#d4a853;font-weight:700;">REAL PRICE SIMULATOR</span>
+  </div>
+  <h1><span class="r">楽天</span> vs <span class="a">Amazon</span></h1>
+  <div class="sub">Amazon価格取得ブックマークレット セットアップ</div>
+
+  <div class="card">
+    <h2>🔖 このブックマークレットでできること</h2>
+    <p>Amazonの商品ページを開いた状態でブックマークをクリックするだけで、商品名と価格が自動的にシミュレーターに送られます。手動で価格を入力する手間がなくなります。</p>
+  </div>
+
+  <h2>📋 セットアップ手順</h2>
+
+  <div class="steps-img">
+    <div class="step-box"><div class="step-num">1</div><div class="step-label">下のボタンを<br>ブックマークバーに<br>ドラッグ&ドロップ</div></div>
+    <div class="step-box"><div class="step-num">2</div><div class="step-label">Amazonで<br>商品ページを開く</div></div>
+    <div class="step-box"><div class="step-num">3</div><div class="step-label">ブックマークを<br>クリック</div></div>
+  </div>
+
+  <div class="drag-hint">
+    <p style="font-size:13px;color:#d4a853;margin-bottom:12px;">↓ このボタンをブックマークバーにドラッグしてください ↓</p>
+    <a class="bookmarklet-btn"
+       href="javascript:void(function(){try{var n=document.getElementById('productTitle');var t=n?n.textContent.trim():'';var p='';var s=['span.a-price:not([data-a-strike]) > span.a-offscreen','#priceblock_ourprice','#priceblock_dealprice','#corePrice_feature_div span.a-price:not([data-a-strike]) span.a-offscreen','.a-price:not([data-a-strike]):not(.a-text-price) span.a-offscreen','#price_inside_buybox','#newBuyBoxPrice','.offer-price'];for(var i=0;i<s.length;i++){var e=document.querySelector(s[i]);if(e){var txt=e.textContent.replace(/[^0-9,.]/g,'').replace(/,/g,'');if(txt){p=txt;break;}}}if(!p){alert('価格を取得できませんでした。Amazon商品ページで実行してください。');return;}var ship='0';var fs=document.querySelector('#mir-layout-DELIVERY_BLOCK');if(fs){var ftxt=fs.textContent;if(/無料/.test(ftxt)||/FREE/.test(ftxt)){ship='0';}else{var m=ftxt.match(/([0-9,]+)円/);if(m)ship=m[1].replace(/,/g,'');}}var url='https://price-simulator-flame.vercel.app/?aPrice='+encodeURIComponent(p)+'&aShip='+encodeURIComponent(ship)+'&aName='+encodeURIComponent(t);window.open(url,'_blank');}catch(ex){alert('エラー: '+ex.message);}})();">
+      📦 Amazonから価格を送る
+    </a>
+    <p style="font-size:11px;color:#6a6660;margin-top:8px;">※ ドラッグできない場合は、右クリック → ブックマークに追加 → URL欄に下のコードを貼り付け</p>
+  </div>
+
+  <h2>💡 使い方</h2>
+  <ol>
+    <li>Amazonで比較したい商品のページを開く</li>
+    <li>ブックマークバーの「📦 Amazonから価格を送る」をクリック</li>
+    <li>シミュレーターが新しいタブで開き、Amazon側の価格と商品名が自動入力される</li>
+    <li>楽天側の商品URLを入力して「価格取得」→ 比較完了！</li>
+  </ol>
+
+  <div class="warn">
+    <p><strong>⚠️ 注意事項</strong></p>
+    <p style="font-size:13px;margin-top:4px;">ブックマークレットはAmazon.co.jpの商品ページ（/dp/ を含むURL）で動作します。検索結果ページやカートページでは動作しません。ポイントやクーポン割引は反映されないため、実際の支払額と異なる場合があります。</p>
+  </div>
+
+  <h2>🔧 スマートフォンの場合</h2>
+  <div class="card">
+    <p>スマホではブックマークレットが使いにくいため、以下の手順で手動コピーが便利です：</p>
+    <ol>
+      <li>Amazonアプリで商品ページの価格を確認</li>
+      <li>シミュレーターを開いて「商品情報」タブのAmazon欄に手動入力</li>
+    </ol>
+  </div>
+
+  <div style="margin-top:32px;padding:16px;font-size:10px;color:#5a5650;line-height:1.7;text-align:center;">
+    本ツールはAmazon商品ページのDOM要素から価格情報を読み取ります。<br>
+    Amazonのページ構造変更により動作しなくなる場合があります。<br>
+    取得した情報はブラウザ内で処理され、外部サーバーには送信されません。
+  </div>
+</div>
+</body>
+</html>
