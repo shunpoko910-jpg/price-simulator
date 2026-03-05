@@ -9,6 +9,7 @@ export async function GET(request) {
   const accessKey = searchParams.get("accessKey");
   const itemCode = searchParams.get("itemCode");
   const keyword = searchParams.get("keyword");
+  const shopCode = searchParams.get("shopCode");
 
   if (!appId) {
     return NextResponse.json({ error: "appId is required" }, { status: 400 });
@@ -36,6 +37,7 @@ export async function GET(request) {
   if (itemCode) {
     params.set("itemCode", itemCode);
   } else {
+    if (shopCode) params.set("shopCode", shopCode);
     params.set("keyword", keyword);
   }
 
