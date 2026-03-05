@@ -198,10 +198,20 @@ export default function Home() {
     setRFetch("loading"); setFetchErr(""); setRName(""); setRImg("");
 
     try {
-      const params = new URLSearchParams({ appId, itemCode: parsed.itemCode });
+      // Use shopCode + keyword search (more reliable than itemCode on new API)
+      const params = new URLSearchParams({ appId, keyword: parsed.itemId, shopCode: parsed.shopCode });
       if (accessKey) params.set("accessKey", accessKey);
-      const res = await fetch(`/api/rakuten?${params}`);
-      const data = await res.json();
+      let res = await fetch(`/api/rakuten?${params}`);
+      let data = await res.json();
+
+      // If shopCode+keyword fails, try keyword only with shop name
+      if (data.error) {
+        const params2 = new URLSearchParams({ appId, keyword: `${parsed.shopCode} ${parsed.itemId}` });
+        if (accessKey) params2.set("accessKey", accessKey);
+        res = await fetch(`/api/rakuten?${params2}`);
+        data = await res.json();
+      }
+
       if (data.error) throw new Error(data.error);
 
       if (data.Items && data.Items.length > 0) {
