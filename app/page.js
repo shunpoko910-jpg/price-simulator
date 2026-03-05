@@ -3,18 +3,23 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 
 const RAKUTEN_SPU_ITEMS = [
-  { id: "rakuten_card", label: "楽天カード", rate: 2, desc: "通常+2倍" },
-  { id: "rakuten_premium_card", label: "楽天プレミアムカード", rate: 2, desc: "さらに+2倍" },
-  { id: "rakuten_mobile", label: "楽天モバイル", rate: 4, desc: "+4倍" },
-  { id: "rakuten_mobile_carrier", label: "楽天モバイルキャリア決済", rate: 2, desc: "+2倍" },
-  { id: "rakuten_bank", label: "楽天銀行+楽天カード", rate: 0.5, desc: "+0.5倍" },
-  { id: "rakuten_securities", label: "楽天証券 投資信託", rate: 0.5, desc: "+0.5倍" },
-  { id: "rakuten_wallet", label: "楽天ウォレット", rate: 0.5, desc: "+0.5倍" },
-  { id: "rakuten_travel", label: "楽天トラベル", rate: 1, desc: "+1倍" },
-  { id: "rakuten_books", label: "楽天ブックス", rate: 0.5, desc: "+0.5倍" },
-  { id: "rakuten_kobo", label: "楽天Kobo", rate: 0.5, desc: "+0.5倍" },
-  { id: "rakuten_fashion", label: "Rakuten Fashion", rate: 0.5, desc: "+0.5倍" },
-  { id: "rakuten_beauty", label: "楽天ビューティ", rate: 0.5, desc: "+0.5倍" },
+  { id: "rakuten_mobile", label: "楽天モバイル", rate: 4, desc: "+4倍（要エントリー）" },
+  { id: "rakuten_mobile_carrier", label: "楽天モバイル キャリア決済", rate: 2, desc: "+2倍（月2,000円以上）" },
+  { id: "rakuten_turbo_hikari", label: "Rakuten Turbo／楽天ひかり", rate: 2, desc: "+2倍（要エントリー）" },
+  { id: "rakuten_card", label: "楽天カード（通常+特典）", rate: 2, desc: "+2倍" },
+  { id: "rakuten_bank", label: "楽天銀行+楽天カード", rate: 0.5, desc: "最大+0.5倍（引落+給与受取）" },
+  { id: "rakuten_securities", label: "楽天証券 投資信託", rate: 0.5, desc: "+0.5倍（月3万円以上）" },
+  { id: "rakuten_securities_us", label: "楽天証券 米国株式", rate: 0.5, desc: "+0.5倍（月3万円以上）" },
+  { id: "rakuten_wallet", label: "楽天ウォレット", rate: 0.5, desc: "+0.5倍（月3万円以上）" },
+  { id: "rakuten_denki", label: "楽天でんき", rate: 0.5, desc: "+0.5倍（前月5,500円以上）" },
+  { id: "rakuten_travel", label: "楽天トラベル", rate: 1, desc: "+1倍（月1回利用）" },
+  { id: "rakuten_books", label: "楽天ブックス", rate: 0.5, desc: "+0.5倍（1回3,000円以上）" },
+  { id: "rakuten_kobo", label: "楽天Kobo", rate: 0.5, desc: "+0.5倍（1回3,000円以上）" },
+  { id: "rakuten_rakuma", label: "楽天ラクマ", rate: 0.5, desc: "+0.5倍（月1回販売）" },
+  { id: "rakuten_fashion", label: "Rakuten Fashionアプリ", rate: 0.5, desc: "+0.5倍" },
+  { id: "rakuten_beauty", label: "楽天ビューティ", rate: 0.5, desc: "+0.5倍（月1回利用）" },
+  { id: "rakuten_pasha", label: "Rakuten Pasha", rate: 0.5, desc: "+0.5倍" },
+  { id: "rakuten_kdreams", label: "楽天Kドリームス", rate: 0.5, desc: "+0.5倍" },
 ];
 
 const AMAZON_CONDITIONS = [
@@ -222,7 +227,7 @@ export default function Home() {
     mult += Math.min(Math.max(parseInt(shops) || 1, 1), 10) - 1;
     if (d50) mult += 3;
     if (sale) mult += 1;
-    const cm = Math.min(mult, 46.5);
+    const cm = Math.min(mult, 18);
     const rPts = Math.round((rp / 1.1) * (cm / 100));
     const rTot = rp + rs, rAct = rTot - rPts;
     let aRate = 1;
@@ -502,8 +507,8 @@ export default function Home() {
         </div>
 
         <div style={{ marginTop: 16, padding: 16, fontSize: 10, color: "var(--text-faint)", lineHeight: 1.7, textAlign: "center" }}>
-          ※ 計算結果は概算です。ポイント上限・条件により実際の付与と異なる場合があります。<br />
-          設定はブラウザに自動保存され次回以降も引き継がれます。
+          ※ 計算結果は概算です。SPU最大18倍。各項目にポイント上限があり、実際の付与と異なる場合があります。<br />
+          SPU条件は2026年3月時点の公式情報に基づいています。設定はブラウザに自動保存されます。
         </div>
       </div>
     </main>
