@@ -427,6 +427,11 @@ export default function Home() {
                   <NumInput value={aShip} onChange={setAShip} placeholder="0" prefix="¥" />
                 </div>
               </div>
+              {aName && (
+                <div style={{ marginTop: 8, fontSize: 10, color: "#ff9966", lineHeight: 1.5 }}>
+                  ⚠ ブックマークレットはタイムセール等で税抜価格を取得する場合があります。Amazonの商品ページで税込価格をご確認のうえ、必要に応じて修正してください。
+                </div>
+              )}
             </div>
           </div>
         )}
