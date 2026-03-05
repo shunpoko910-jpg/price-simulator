@@ -191,7 +191,7 @@ export default function Home() {
     setRFetch("loading"); setFetchErr(""); setRName(""); setRImg("");
 
     try {
-      const params = new URLSearchParams({ appId, shopCode: parsed.shopCode, keyword: parsed.itemId });
+      const params = new URLSearchParams({ appId, itemCode: parsed.itemCode });
       const res = await fetch(`/api/rakuten?${params}`);
       const data = await res.json();
       if (data.error) throw new Error(data.error);
