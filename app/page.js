@@ -143,6 +143,7 @@ export default function Home() {
   const [rImg, setRImg] = useState("");
   const [aPrice, setAPrice] = useState("");
   const [aShip, setAShip] = useState("0");
+  const [aName, setAName] = useState("");
   const [shops, setShops] = useState("1");
   const [spu, setSpu] = useState({});
   const [amz, setAmz] = useState({});
@@ -168,6 +169,19 @@ export default function Home() {
       if (d.accessKey) setAccessKey(d.accessKey);
     }
     setLoaded(true);
+
+    // Read Amazon data from URL params (sent by bookmarklet)
+    const url = new URL(window.location.href);
+    const ap = url.searchParams.get("aPrice");
+    const as2 = url.searchParams.get("aShip");
+    const an = url.searchParams.get("aName");
+    if (ap) setAPrice(ap);
+    if (as2) setAShip(as2);
+    if (an) setAName(decodeURIComponent(an));
+    // Clean URL params without reload
+    if (ap || an) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
   }, []);
 
   useEffect(() => {
@@ -390,12 +404,23 @@ export default function Home() {
               <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 2, background: acRaw }} />
                 <span style={{ fontSize: 13, fontWeight: 700 }}>Amazon</span>
-                <span style={{ fontSize: 10, color: "var(--text-faint)", fontStyle: "italic" }}>手動入力</span>
+                {aName ? <Pill text="ブックマークレット取得済" color={acRaw} /> : <span style={{ fontSize: 10, color: "var(--text-faint)", fontStyle: "italic" }}>手動入力 or ブックマークレット</span>}
               </div>
+              {aName && (
+                <div style={{
+                  marginBottom: 14, padding: 10, background: "var(--bg)", borderRadius: 8,
+                  border: `1px solid ${acRaw}33`,
+                }}>
+                  <div style={{ fontSize: 11, fontWeight: 600, lineHeight: 1.4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>{aName}</div>
+                  <div style={{ fontSize: 12, fontWeight: 800, color: acRaw, marginTop: 2, fontFamily: "'DM Mono', monospace" }}>{formatYen(parseFloat(aPrice) || 0)}</div>
+                </div>
+              )}
               <div style={{ display: "flex", gap: 10 }}>
                 <div style={{ flex: 2 }}>
-                  <div style={{ fontSize: 10, color: "var(--text-muted)", marginBottom: 4, fontWeight: 600 }}>商品価格（税込）</div>
-                  <NumInput value={aPrice} onChange={setAPrice} placeholder="9800" prefix="¥" />
+                  <div style={{ fontSize: 10, color: "var(--text-muted)", marginBottom: 4, fontWeight: 600 }}>
+                    商品価格（税込）{aName && <span style={{ color: acRaw }}> ← 自動取得済</span>}
+                  </div>
+                  <NumInput value={aPrice} onChange={(v) => { setAPrice(v); if (!v) setAName(""); }} placeholder="9800" prefix="¥" />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 10, color: "var(--text-muted)", marginBottom: 4, fontWeight: 600 }}>送料</div>
